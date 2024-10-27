@@ -1,0 +1,1 @@
+./xtf -a '2023-10-22 18:14:15' -a '2023-10-22 18:30:07' status CryptoWiz cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode

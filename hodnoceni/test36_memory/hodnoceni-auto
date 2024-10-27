@@ -1,0 +1,13 @@
+0:test36_memory: omezena pamet pro zpracovani 90MB souboru, prikaz spousten s ulimit -v 185750 a ulimit -H -v &>/dev/null
+# ./xtf list CryptoChill large.gz <stdin >>stdout 2>>stderr; echo $? >>errcode
+# errcode=2; ocekavan errcode=0
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -1 +0,0 @@
+#   -CryptoChill;2023-02-25 05:14:32;ETH;1.0000
+# diff -u stderr.ref stderr
+#   --- stderr.ref
+#   +++ stderr
+#   @@ -0,0 +1 @@
+#   +./xtf: xmalloc: cannot allocate 179999995 bytes

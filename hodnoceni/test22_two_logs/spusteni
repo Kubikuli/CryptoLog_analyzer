@@ -1,0 +1,1 @@
+./xtf list ExpeditedExchange cryptoexchange1.log cryptoexchange2.log <stdin >>stdout 2>>stderr; echo $? >>errcode

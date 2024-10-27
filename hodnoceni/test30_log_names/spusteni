@@ -1,0 +1,1 @@
+./xtf list BatCoin _ ...gz .gz '.p.e.p.a ...l.o.g.' '(' @ '*' '&' # '$' data.gz.log <stdin >>stdout 2>>stderr; echo $? >>errcode

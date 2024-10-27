@@ -1,0 +1,1 @@
+./xtf -c ETH -c BTC -c USD status TopCrypto cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode

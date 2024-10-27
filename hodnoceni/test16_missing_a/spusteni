@@ -1,0 +1,1 @@
+./xtf -a list CryptoWiz cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode

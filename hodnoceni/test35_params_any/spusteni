@@ -1,0 +1,1 @@
+./xtf status TopCrypto -b '2023-10-22 18:39:10' cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode

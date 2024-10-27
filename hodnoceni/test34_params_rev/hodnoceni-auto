@@ -1,0 +1,8 @@
+0:test34_params_rev: obracene poradi parametru
+# ./xtf TopCrypto status -b '2023-10-22 18:39:10' cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -1,2 +0,0 @@
+#   -EUR : -2500.0000
+#   -USD : -1500.0000

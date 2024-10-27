@@ -1,0 +1,106 @@
+12:celkem bodu za projekt
+#-- automaticke hodnoceni -----------------------------
+0:ok: docasne soubory:
+0.5:ok: vypis zaznamu
+0.5:ok: implicitni vypis zaznamu
+0.5:ok: vypis (crypto)men
+0.5:ok: stav uctu
+0.5:ok: profit uctu uzivatele
+0.5:ok: profit uctu navyseny o 35% (export XTF_PROFIT=35)
+0.5:ok: filtr -c nad seznamem transakci
+0:test09_filt_no_c: filtr -c bez existujicich zaznamu
+# ./xtf -c ABC list-currency TopCrypto cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -0,0 +1,3 @@
+#   +ETH
+#   +EUR
+#   +USD
+0.5:ok: filtr -a nad stavem uctu
+0.5:ok: filtr -b nad stavem uctu
+0.5:ok: filtr -a a -b nad profitem uctu
+0.5:ok: filtr -a, -b a -c nad profitem uctu navysenym o 42% (export XTF_PROFIT=42)
+0.5:ok: xtf bez parametru
+0.5:ok: xtf s neuplnymi parametry
+0.5:ok: chybejici hodnota u filtru -a
+0:test17_multiple_a: vicenasobna specifikace filtru -a (neni stderr a chybovy kod)
+0.5:ok: nevalidni cas u filtru -b
+0:test19_h: vypis napovedy
+# ./xtf -h <stdin >>stdout 2>>stderr; echo $? >>errcode
+# errcode=1; ocekavan errcode=0
+# diff -u stderr.ref stderr
+#   --- stderr.ref
+#   +++ stderr
+#   @@ -0,0 +1 @@
+#   +No valid files provided
+0:test20_help: vypis napovedy s nadbytecnym parametrem
+# ./xtf --help list <stdin >>stdout 2>>stderr; echo $? >>errcode
+# errcode=1; ocekavan errcode=0
+# diff -u stderr.ref stderr
+#   --- stderr.ref
+#   +++ stderr
+#   @@ -0,0 +1 @@
+#   +No valid files provided
+0.5:ok: neexistujici log soubor
+0.5:ok: vice textovych log souboru
+0.5:ok: textovy, komprimovany a prazdny log soubor
+0.5:ok: identicke log soubory
+0:test25_missing_cols: log soubor s chybejicimi sloupci (neni stderr a chybovy kod)
+0:test26_inv_records: chybny format dat v log soubru (neni stderr a chybovy kod)
+0.5:ok: prestupny rok
+0.5:ok: symlink log souboru
+0.5:ok: nepristupny log soubor
+0.5:ok: prace s neobvyklymi nazvy souboru
+0.5:ok: filtr -a a -b s prazdnym prunikem zaznamu
+0:test32_list_cc: dvojity filtr -c nad seznamem transakci
+# ./xtf -c ETH -c EUR list TopCrypto cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -1,3 +1 @@
+#    TopCrypto;2023-10-22 18:14:19;EUR;-2500.0000
+#   -TopCrypto;2023-10-22 18:39:14;ETH;3.1875
+#   -TopCrypto;2023-10-22 18:39:37;ETH;9.3511
+0:test33_status_ccc: trojity filtr -c nad stavem uctu
+# ./xtf -c ETH -c BTC -c USD status TopCrypto cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -1,3 +1 @@
+#   -BTC : 9.3511
+#   -ETH : 3.1875
+#    USD : -1500.0000
+0:test34_params_rev: obracene poradi parametru
+# ./xtf TopCrypto status -b '2023-10-22 18:39:10' cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -1,2 +0,0 @@
+#   -EUR : -2500.0000
+#   -USD : -1500.0000
+0:test35_params_any: libovolne poradi parametru
+# ./xtf status TopCrypto -b '2023-10-22 18:39:10' cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -1,2 +1,3 @@
+#   +ETH : 12.5386
+#    EUR : -2500.0000
+#    USD : -1500.0000
+0:test36_memory: omezena pamet pro zpracovani 90MB souboru, prikaz spousten s ulimit -v 185750 a ulimit -H -v &>/dev/null
+# ./xtf list CryptoChill large.gz <stdin >>stdout 2>>stderr; echo $? >>errcode
+# errcode=2; ocekavan errcode=0
+# diff -u stdout.ref stdout
+#   --- stdout.ref
+#   +++ stdout
+#   @@ -1 +0,0 @@
+#   -CryptoChill;2023-02-25 05:14:32;ETH;1.0000
+# diff -u stderr.ref stderr
+#   --- stderr.ref
+#   +++ stderr
+#   @@ -0,0 +1 @@
+#   +./xtf: xmalloc: cannot allocate 179999995 bytes
+#------------------------------------------------------
+12:celkove score (max pro hodnoceni 15)
+12:celkem bodu za projekt

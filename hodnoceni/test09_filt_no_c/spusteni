@@ -1,0 +1,1 @@
+./xtf -c ABC list-currency TopCrypto cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode

@@ -1,0 +1,1 @@
+./xtf list CryptoAbsolute logsymlink <stdin >>stdout 2>>stderr; echo $? >>errcode

@@ -1,0 +1,8 @@
+0:test20_help: vypis napovedy s nadbytecnym parametrem
+# ./xtf --help list <stdin >>stdout 2>>stderr; echo $? >>errcode
+# errcode=1; ocekavan errcode=0
+# diff -u stderr.ref stderr
+#   --- stderr.ref
+#   +++ stderr
+#   @@ -0,0 +1 @@
+#   +No valid files provided

@@ -1,0 +1,6 @@
+1217763 +++ exited with 0 +++
+1217761 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1217763, si_uid=1002, si_status=0, si_utime=0, si_stime=0} ---
+1217765 +++ exited with 0 +++
+1217766 +++ exited with 0 +++
+1217761 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1217765, si_uid=1002, si_status=0, si_utime=0, si_stime=0} ---
+1217761 +++ exited with 0 +++

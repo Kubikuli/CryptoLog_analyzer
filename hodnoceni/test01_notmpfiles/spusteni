@@ -1,0 +1,1 @@
+strace -f -o xtf.trace -e trace=open,creat ./xtf list Trader1 cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode

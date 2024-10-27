@@ -1,0 +1,1 @@
+./xtf --help list <stdin >>stdout 2>>stderr; echo $? >>errcode

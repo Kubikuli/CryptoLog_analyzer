@@ -1,0 +1,1 @@
+./xtf status CentSecurity broken.log <stdin >>stdout 2>>stderr; echo $? >>errcode

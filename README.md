@@ -2,4 +2,4 @@
 
 BODY: 12/15
 
-Comment:
+Comment: viz. /hodnoceni

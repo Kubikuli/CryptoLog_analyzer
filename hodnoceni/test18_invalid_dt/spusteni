@@ -1,0 +1,1 @@
+./xtf -b '2023-10-22 26:30:07' list CryptoWiz cryptoexchange.log <stdin >>stdout 2>>stderr; echo $? >>errcode
