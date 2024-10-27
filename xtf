@@ -1,0 +1,127 @@
+#!/bin/bash
+
+POSIXLY_CORRECT=yes
+AFTER_DATE="0000-00-00 00:00:00"
+BEFORE_DATE="9999-12-31 23:59:59"
+CURRENCY=""
+# Sets default value to XTF_PROFIT if it's uninitialized
+if [ -z "$XTF_PROFIT" ]; then
+    XTF_PROFIT=20
+fi
+
+OPTIND=1
+# Processing options
+while getopts ":ha:b:c:-:" opt
+do
+    case "$opt" in
+        a)  AFTER_DATE=$OPTARG ;;
+        b)  BEFORE_DATE=$OPTARG ;;
+        c)  CURRENCY=$OPTARG ;;
+        -);;
+        h);;
+        :)  echo "Option -${OPTARG} requires an argument" ;;
+        *)  echo "Invalid option" ;;
+    esac
+done
+
+# Checks the date format for both BEFORE/AFTER date
+pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$"
+if [[ ! ($AFTER_DATE =~ $pattern) || ! ($BEFORE_DATE =~ $pattern) ]]; then
+    echo "Invalid date format" >&2
+    exit 1
+fi
+
+gz_files=()
+other_files=()
+
+# Iterates through all command-line arguments
+for arg in "$@"; do
+    # Look for all gziped files ending .gz
+    if [[ "$arg" == *.gz ]]; then
+        gz_files+=("$arg")
+    # Saves all arguments that are other files
+    elif [ -f "$arg" ]; then
+        other_files+=("$arg")
+    fi
+done
+
+# Saves all the logs from files into a single variable
+if [ ${#other_files[@]} -gt 0 ]; then
+    file_logs=$(cat "${other_files[@]}")
+fi
+
+if [ ${#gz_files[@]} -gt 0 ]; then
+    file_logs+=$(zcat "${gz_files[@]}")
+fi
+
+# Ends the script if there are no valid files
+if [ -z "$file_logs" ]; then
+    echo "No valid files provided" >&2
+    exit 1
+fi
+
+# Parsing arguments for correct function
+arg_counter=1       # 1 more than the index of argument, so it gives us $(index+1) argument when we find the function
+for arg in "$@"
+do
+    ((arg_counter++))
+    # HELP function
+    if [ "$arg" == "--help" ] || [ "$arg" == "-h" ]; then
+        echo COMMAND:
+        echo "   "list"                    "prints out logs for the specified user
+        echo "   "list-currency"           "prints out sorted list of all occurring currencies
+        echo "   "status"                  "prints out real status of user account grouped by currencies
+        echo "   "profit"                  "prints out status of the user with fictional profit
+        echo FILTR:
+        echo "   ""-a" DATETIME"           "prints out only logs after given DATETIME --- DATETIME format -- YYYY-MM-DD HH:MM:SS
+        echo "   ""-b" DATETIME"           "prints out only logs before given DATETIME
+        echo "   ""-c" CURRENCY"           "prints out only logs matching given currency
+        echo "-h" "--help""                 "prints out THIS help message
+        exit 0
+    
+    # LIST function
+    elif [ "$arg" == "list" ]; then
+    echo "$file_logs" | awk -F';' -v user="${!arg_counter}" -v currency="$CURRENCY" -v after_d="$AFTER_DATE" -v before_d="$BEFORE_DATE" '
+    $1 == user && (currency == "" || $3 == currency) && $2 > after_d && $2 < before_d { print }'
+    exit 0
+    
+    # LIST-CURRENCY function
+    elif [ "$arg" == "list-currency" ]; then
+    echo "$file_logs" | awk -F';' -v user="${!arg_counter}" -v after_d="$AFTER_DATE" -v before_d="$BEFORE_DATE" '
+    $1 == user && $2 > "'"$AFTER_DATE"'" && $2 < "'"$BEFORE_DATE"'" { print $3 }' | sort | uniq
+    exit 0
+    
+    # STATUS function
+    elif [ "$arg" == "status" ]; then
+    echo "$file_logs" | awk -F';' -v user="${!arg_counter}" -v currency="$CURRENCY" -v after_d="$AFTER_DATE" -v before_d="$BEFORE_DATE" '
+    $1 == user && (currency == "" || $3 == currency) && $2 > after_d && $2 < before_d  {
+        currency_sum[$3] += $4
+    }
+    END {
+        for (currency in currency_sum) {
+            printf "%s : %.4f\n", currency, currency_sum[currency]
+        }
+    }' | sort
+    exit 0
+    
+    # PROFIT function
+    elif [ "$arg" == "profit" ]; then
+    echo "$file_logs" | awk -F';' -v user="${!arg_counter}" -v currency="$CURRENCY" -v after_d="$AFTER_DATE" -v before_d="$BEFORE_DATE" -v profit="$XTF_PROFIT" '
+    $1 == user && (currency == "" || $3 == currency) && $2 > after_d && $2 < before_d  {
+        currency_sum[$3] += $4
+    }
+    END {
+        for (currency in currency_sum) {
+            final_sum = currency_sum[currency] * (currency_sum[currency] > 0 ? profit/100+1 : 1)
+            printf "%s : %.4f\n", currency, final_sum
+        }
+    }' | sort
+    exit 0
+    fi
+done
+
+arg_counter=1
+# DEFAULT function if there was no function selected
+echo "$file_logs" | awk -F';' -v user="${!arg_counter}" -v currency="$CURRENCY" -v after_d="$AFTER_DATE" -v before_d="$BEFORE_DATE" '
+    $1 == user && (currency == "" || $3 == currency) && $2 > after_d && $2 < before_d { print }'
+    exit 0
